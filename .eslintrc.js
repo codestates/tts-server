@@ -10,9 +10,4 @@ module.exports = {
     browser: true,
     node: true,
   },
-
-  // rules: {
-  //   "no-unexpected-multiline": "error",
-  //   "no-extra-semi": "error",
-  // },
 };
