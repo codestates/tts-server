@@ -6,7 +6,11 @@
   "scripts": {
     "start": "pm2 start index.js",
     "stop": "pm2 stop index.js",
-    "restart": "pm2 restart index.js"
+    "restart": "pm2 restart index.js",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
   },
   "author": "",
   "license": "ISC",
@@ -25,5 +29,12 @@
     "pm2": "^4.5.5",
     "sequelize": "^6.5.1",
     "sequelize-cli": "^6.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1"
   }
 }
