@@ -5,7 +5,7 @@ module.exports = {
   signUp: async (req, res) => {
     const {email, password, userName} = req.body;
     if (!email || !password || !userName) {
-      const validCheck = await user.findOne({email});
+      const validCheck = await user.findOne({where: {email}});
       if (!validCheck) {
         const newUser = await user.create({email, password, userName});
         // 가장 기본적인 태그(티어로 치면 '언랭', 칭호로 치면 '초심자' 같은 것을 부여);
@@ -27,7 +27,7 @@ module.exports = {
       // 필수 요소 중 하나라도 없을 때
       res.status(400).json({message: 'need full information'});
     } else {
-      const userInfo = await user.findOne({email, password});
+      const userInfo = await user.findOne({where: {email, password}});
       if (!userInfo) {
         // 이메일, 비밀번호 중 적어도 하나 이상 맞지 않을 때
         res.status(404).json({message: 'not exist, check your email or password'});
