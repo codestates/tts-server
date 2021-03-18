@@ -1,5 +1,4 @@
-const { where } = require("sequelize");
-const { user, tag, user_tag, record } = require("../models");
+const { user, tag, users_tag, record } = require("../models");
 
 module.exports = {
   // 유저 정보 조회
@@ -11,13 +10,19 @@ module.exports = {
         where: { id: req.session.userId },
       });
       // 태그 전달 테스트 필요
-      const tags = await tag.findAll({
+      const tagsInfo = await tag.findAll({
         include: [
           {
-            model: user_tag,
+            model: users_tag,
+            where: {userId: req.session.userId},
           },
-        ],
+        ]
       });
+      const tags = []
+      for (let i = 0; i < tagsInfo.length; i += 1) {
+        tags.push(tagsInfo[i].dataValues.tagName);
+      };
+
       const { email, userName } = userInfo.dataValues;
       res.status(200).json({ data: { email, userName, tags }, message: "ok" });
     }
@@ -33,7 +38,7 @@ module.exports = {
         const data = await record.findOne({ where: { week, day, recordName } });
         // 해당 날짜에 존재하는 데이터가 없을 땐 새로운 데이터 생성 아니면 시간 업데이트
         if (!data) {
-          await record.create({ week, day, recordName, time });
+          await record.create({ week, day, recordName, time, userId: req.session.userId });
         } else {
           await record.update(
             { time: data.dataValues.time + time },
@@ -54,12 +59,28 @@ module.exports = {
         const data = await record.findAll({
           where: { userId: req.session.userId },
         });
+        let sumData = {};
+        for (let i = 0; i < data.length; i += 1) {
+          const {recordName, day, week, time} = data[i].dataValues;
+          if (!sumData[recordName]) {
+            sumData[recordName] = {};
+          };
+
+          if (!sumData[recordName][week]) {
+            const newArr = Array(7).fill(null);
+            newArr[day] = time;
+            sumData[recordName][week] = newArr;
+          } else {
+            sumData[recordName][week][day] = time;
+          }
+        };
+
         res.status(200).json({
-          data: data.dataValues,
+          data: sumData,
           message: userInfo.dataValues.userName + "`s records",
         });
       }
-    },
+    }
   },
   // 로그아웃
   logOut: async (req, res) => {

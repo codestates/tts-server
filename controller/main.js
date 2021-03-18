@@ -1,15 +1,15 @@
-const { user, tag, user_tag } = require("../models");
+const { user, users_tag } = require("../models");
 
 module.exports = {
   // 회원가입 요청
   signUp: async (req, res) => {
     const { email, password, userName } = req.body;
-    if (!email || !password || !userName) {
+    if (email && password && userName) {
       const validCheck = await user.findOne({ where: { email } });
       if (!validCheck) {
         const newUser = await user.create({ email, password, userName });
         // 가장 기본적인 태그(티어로 치면 '언랭', 칭호로 치면 '초심자' 같은 것을 부여);
-        await user_tag.create({ userId: newUser.dataValues.id, tagId: 1 });
+        await users_tag.create({ userId: newUser.dataValues.id, tagId: 1 });
         res.status(200).json({ message: "signup successfully" });
       } else {
         // 해당 이메일로 가입한 유저가 이미 존재할 때
