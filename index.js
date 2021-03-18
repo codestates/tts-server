@@ -1,19 +1,52 @@
 const express = require("express");
+const router = require("./Routers");
+const session = require("express-session");
 const cors = require("cors");
+const morgan = require("morgan");
+// const controllers = require("./controllers/links");
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-const indexRouter = require("./routes/index");
+app.use(
+  morgan(":method :url :stauts :res[content-length] - :response-times ms")
+);
 
-app.use(cors());
+app.use(
+  session({
+    secret: "@A!B$",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      domain: "*",
+      path: "/*",
+      maxAge: 24 * 3600 * 1000,
+      sameSite: "none",
+      httpOnly: true,
+      secure: true,
+    },
+  })
+);
+
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTION"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-app.get("/", indexRouter);
+app.use("/", router);
+app.use("/user", router);
 
-// (req, res) => {
-//   res.status(200).send("연결성공");
-// });
+app.get("/", (req, res) => {
+  res.status(200).send({ message: "Connect Successfully" });
+});
 
 app.listen(port, () => {
-  console.log("server on port " + port);
+  console.log("Server on port " + port);
 });
+
+module.exports = app;
