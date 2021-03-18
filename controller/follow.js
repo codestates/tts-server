@@ -1,7 +1,7 @@
 const { Sequelize } = require("sequelize");
 const { user, users_tag, tag, follow } = require("../models");
 const Op = Sequelize.Op;
-
+​
 module.exports = {
   // 유저 검색
   search: async (req, res) => {
@@ -21,7 +21,7 @@ module.exports = {
         }
       ], where: {[Op.or]: [{email: standard}, {userName:standard}]}, attributes: ['email', 'userName'], order: [[{model: users_tag}, 'tagId', 'DESC']]
     });
-
+​
     if (!userInfo) {
       res.status(404).json({ message: "not found" });
     } else {

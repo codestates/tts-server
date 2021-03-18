@@ -1,5 +1,5 @@
 const { user, tag, users_tag, record } = require("../models");
-
+​
 module.exports = {
   // 유저 정보 조회
   userInfo: async (req, res) => {
@@ -22,7 +22,7 @@ module.exports = {
       for (let i = 0; i < tagsInfo.length; i += 1) {
         tags.push(tagsInfo[i].dataValues.tagName);
       };
-
+​
       const { email, userName } = userInfo.dataValues;
       res.status(200).json({ data: { email, userName, tags }, message: "ok" });
     }
@@ -65,7 +65,7 @@ module.exports = {
           if (!sumData[recordName]) {
             sumData[recordName] = {};
           };
-
+​
           if (!sumData[recordName][week]) {
             const newArr = Array(7).fill(null);
             newArr[day] = time;
@@ -74,7 +74,7 @@ module.exports = {
             sumData[recordName][week][day] = time;
           }
         };
-
+​
         res.status(200).json({
           data: sumData,
           message: userInfo.dataValues.userName + "`s records",
