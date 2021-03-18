@@ -1,8 +1,11 @@
 const express = require("express");
-const router = require("./Routers");
 const session = require("express-session");
 const cors = require("cors");
 const morgan = require("morgan");
+const userRouter = require("./Routers/user");
+const mainRouter = require("./Routers/main");
+const followRouter = require("./Routers/follow");
+
 // const controllers = require("./controllers/links");
 
 const app = express();
@@ -39,7 +42,9 @@ app.use(
 app.use(express.json());
 
 app.use("/", router);
-app.use("/user", router);
+app.use("/user", userRouter);
+app.use("/main", mainRouter);
+app.use("/follow", followRouter);
 
 app.get("/", (req, res) => {
   res.status(200).send({ message: "Connect Successfully" });
