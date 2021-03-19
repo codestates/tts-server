@@ -1,7 +1,7 @@
 const { Sequelize } = require("sequelize");
 const { user, users_tag, tag, follow } = require("../models");
 const Op = Sequelize.Op;
-​
+
 module.exports = {
   // 유저 검색
   search: async (req, res) => {
@@ -11,28 +11,31 @@ module.exports = {
       include: [
         {
           model: users_tag,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: tag,
-              attributes: ['tagName', 'time']
-            }
-          ]
-        }
-      ], where: {[Op.or]: [{email: standard}, {userName:standard}]}, attributes: ['email', 'userName'], order: [[{model: users_tag}, 'tagId', 'DESC']]
+              attributes: ["tagName", "time"],
+            },
+          ],
+        },
+      ],
+      where: { [Op.or]: [{ email: standard }, { userName: standard }] },
+      attributes: ["email", "userName"],
+      order: [[{ model: users_tag }, "tagId", "DESC"]],
     });
-​
+
     if (!userInfo) {
       res.status(404).json({ message: "not found" });
     } else {
-      let users = []
+      let users = [];
       for (let i = 0; i < userInfo.length; i += 1) {
-        const {email, userName, users_tags} = userInfo[i].dataValues
-        const tag = users_tags[0].tag.tagName
-        const sumData = {email, userName, tag}
+        const { email, userName, users_tags } = userInfo[i].dataValues;
+        const tag = users_tags[0].tag.tagName;
+        const sumData = { email, userName, tag };
         users.push(sumData);
       }
-      res.status(200).json({data: {users}, message: 'ok'});
+      res.status(200).json({ data: { users }, message: "ok" });
     }
   },
   // 친구 추가
@@ -66,9 +69,12 @@ module.exports = {
   // 친구 조회
   get: async (req, res) => {
     if (!req.session.userId) {
-      res.status(401).json({message: 'unauthorized'});
+      res.status(401).json({ message: "unauthorized" });
     } else {
-      const userInfos = await follow.findAll({ where: {userId: req.session.userId}, attributes: ['followingId'] });
+      const userInfos = await follow.findAll({
+        where: { userId: req.session.userId },
+        attributes: ["followingId"],
+      });
       const following = [];
       for (let i = 0; i < userInfos.length; i += 1) {
         const id = userInfos[i].dataValues.followingId;
@@ -76,22 +82,24 @@ module.exports = {
           include: [
             {
               model: users_tag,
-              attributes: ['id'],
-              where: {userId: id},
+              attributes: ["id"],
+              where: { userId: id },
               include: [
                 {
                   model: tag,
-                  attributes: ['tagName']
-                }
-              ]
-            }
-          ], order: [[{model: users_tag}, 'tagId', 'DESC']], attributes: ['email', 'userName']
+                  attributes: ["tagName"],
+                },
+              ],
+            },
+          ],
+          order: [[{ model: users_tag }, "tagId", "DESC"]],
+          attributes: ["email", "userName"],
         });
         const { email, userName } = data.dataValues;
         const userTag = data.dataValues.users_tags[0].tag.tagName;
-        following.push({email, userName, tag: userTag})
+        following.push({ email, userName, tag: userTag });
       }
-      res.status(200).json({data: following})
+      res.status(200).json({ data: following });
     }
   },
 };

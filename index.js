@@ -5,14 +5,13 @@ const morgan = require("morgan");
 const userRouter = require("./Routers/user");
 const mainRouter = require("./Routers/main");
 const followRouter = require("./Routers/follow");
-​
+
 const app = express();
 const port = process.env.PORT || 5000;
-​
 app.use(
-  morgan(':method :url :status :res[header] :req[header] :response-time ms')
+  morgan(":method :url :status :res[header] :req[header] :response-time ms")
 );
-​
+
 app.use(
   session({
     secret: "@A!B$",
@@ -28,26 +27,24 @@ app.use(
     },
   })
 );
-​
+
 app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "OPTION"],
   })
 );
-​
+
 app.use(express.json());
-​
+
 app.use("/user", userRouter);
 app.use("/main", mainRouter);
 app.use("/follow", followRouter);
-​
+
 app.get("/", (req, res) => {
   res.status(200).send({ message: "Connect Successfully" });
 });
-​
+
 app.listen(port, () => {
   console.log("Server on port " + port);
 });
-​
-module.exports = app;
