@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   tag.init(
     {
       tagName: DataTypes.STRING,
-      time: DataTypes.INTEGER,
+      time: DataTypes.INTEGER
     },
     {
       sequelize,

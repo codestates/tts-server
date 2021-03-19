@@ -51,10 +51,10 @@ record.belongsTo(user);
 user.hasMany(follow);
 follow.belongsTo(user);
 
-user.hasOne(users_tag);
+user.hasMany(users_tag);
 users_tag.belongsTo(user);
 
-users_tag.hasOne(tag);
-tag.belongsTo(users_tag);
+tag.hasMany(users_tag);
+users_tag.belongsTo(tag);
 
 module.exports = db;
