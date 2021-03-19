@@ -1,6 +1,5 @@
 "use strict";
 const { Model } = require("sequelize");
-const user = require("../models/user");
 module.exports = (sequelize, DataTypes) => {
   class users_tag extends Model {
     /**
@@ -15,10 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   users_tag.init(
     {
       userId: DataTypes.INTEGER,
-      reference: {
-        model: user,
-        key: "id",
-      },
       tagId: DataTypes.INTEGER,
     },
     {
