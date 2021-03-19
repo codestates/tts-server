@@ -20,12 +20,12 @@ module.exports = {
           ],
         },
       ],
-      where: { [Op.or]: [{ email: standard }, { userName: standard }] },
+      where: { [Op.or]: [{ email:{ [Op.like]: '%' + standard + '%'} }, { userName: {[Op.like]: '%' + standard + '%'} }] },
       attributes: ["email", "userName"],
       order: [[{ model: users_tag }, "tagId", "DESC"]],
     });
 
-    if (!userInfo) {
+    if (userInfo.length === 0) {
       res.status(404).json({ message: "not found" });
     } else {
       let users = [];
@@ -42,28 +42,29 @@ module.exports = {
   add: async (req, res) => {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });
-    }
-    const { email } = req.body;
-    const userInfo = await user.findOne({ where: { email } });
-    const validCheck = await follow.findOne({
-      where: { userId: req.session.userId, followingId: userInfo.id },
-    });
-    if (validCheck) {
-      res.status(400).json({ message: "already following" });
     } else {
-      await follow.create({
-        userId: req.session.userId,
-        followingId: userInfo.id,
+      const { email } = req.body;
+      const userInfo = await user.findOne({ where: { email } });
+      const validCheck = await follow.findOne({
+        where: { userId: req.session.userId, followingId: userInfo.id },
       });
-      res.status(201).json({
-        data: {
-          followingInfo: {
-            userName: userInfo.dataValues.userName,
-            email: userInfo.dataValues.email,
+      if (validCheck) {
+        res.status(400).json({ message: "already following" });
+      } else {
+        await follow.create({
+          userId: req.session.userId,
+          followingId: userInfo.id,
+        });
+        res.status(201).json({
+          data: {
+            followingInfo: {
+              userName: userInfo.dataValues.userName,
+              email: userInfo.dataValues.email,
+            },
           },
-        },
-        message: "ok",
-      });
+          message: "ok",
+        });
+      }
     }
   },
   // 친구 조회
