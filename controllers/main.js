@@ -30,9 +30,7 @@ module.exports = {
       const userInfo = await user.findOne({ where: { email, password } });
       if (!userInfo) {
         // 이메일, 비밀번호 중 적어도 하나 이상 맞지 않을 때
-        res
-          .status(404)
-          .json({ message: "not exist, check your email or password" });
+        res.status(404).json({ message: "not exist, check your email or password" });
       } else {
         // 존재 할 시 세션을 부여
         req.session.userId = userInfo.id;

@@ -49,10 +49,7 @@ module.exports = {
           });
         } else {
           const sumTime = data.dataValues.time + time;
-          await record.update(
-            { time: sumTime },
-            { where: { week, day, recordName, userId: req.session.userId } }
-          );
+          await record.update({ time: sumTime }, { where: { week, day, recordName, userId: req.session.userId } });
         }
         const total = await record
           .findAll({
@@ -100,6 +97,7 @@ module.exports = {
     },
     // 레코드 조회
     get: async (req, res) => {
+      console.log(req.session);
       if (!req.session.userId) {
         res.status(401).json({ message: "unauthorized" });
       } else {
