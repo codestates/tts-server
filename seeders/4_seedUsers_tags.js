@@ -8,8 +8,20 @@ module.exports = {
         userId: 1,
       },
       {
+        tagId: 1,
+        userId: 2,
+      },
+      {
         tagId: 2,
         userId: 2,
+      },
+      {
+        tagId: 1,
+        userId: 3,
+      },
+      {
+        tagId: 2,
+        userId: 3,
       },
       {
         tagId: 3,
@@ -18,6 +30,10 @@ module.exports = {
       {
         tagId: 3,
         userId: 4,
+      },
+      {
+        tagId: 1,
+        userId: 5,
       },
       {
         tagId: 2,
