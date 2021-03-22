@@ -1,6 +1,8 @@
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
+const fs = require("fs");
+const https = require("https");
 const morgan = require("morgan");
 const userRouter = require("./Routers/user");
 const mainRouter = require("./Routers/main");
@@ -44,6 +46,22 @@ app.get("/", (req, res) => {
   res.status(200).send({ message: "Connect Successfully" });
 });
 
-app.listen(port, () => {
-  console.log("Server on port " + port);
-});
+let server;
+
+if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
+  server = https
+    .createServer(
+      {
+        key: fs.readFileSync(__dirname + "/" + "key.pem", "utf-8"),
+        cert: fs.readFileSync(__dirname + "/" + "cert.pem", "utf-8"),
+      },
+      app
+    )
+    .listen(port);
+} else {
+  server = app.listen(port, () => {
+    console.log("Http Server on ");
+  });
+}
+
+module.exports = server;
