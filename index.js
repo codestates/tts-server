@@ -8,9 +8,7 @@ const followRouter = require("./Routers/follow");
 
 const app = express();
 const port = process.env.PORT || 5000;
-app.use(
-  morgan(":method :url :status :res[header] :req[header] :response-time ms")
-);
+app.use(morgan(":method :url :status :res[header] :req[header] :response-time ms"));
 
 app.use(
   session({
@@ -30,8 +28,9 @@ app.use(
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://localhost:3000",
     methods: ["GET", "POST", "OPTION"],
+    credentials: true,
   })
 );
 
