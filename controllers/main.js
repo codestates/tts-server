@@ -1,5 +1,6 @@
 const { user, users_tag } = require("../models");
 const dotenv = require("dotenv");
+const axios = require('axios');
 dotenv.config();
 
 module.exports = {
