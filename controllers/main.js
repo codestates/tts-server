@@ -1,4 +1,6 @@
 const { user, users_tag } = require("../models");
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports = {
   // 회원가입 요청
@@ -40,4 +42,28 @@ module.exports = {
       }
     }
   },
+
+  oAuth: {
+    accessToken: async (req, res) => {
+      if (!req.body.authorizationCode) {
+        res.status(401).json({messgae: "check authorization code again"})
+      } else {
+        const params = {
+          client_id: process.env.GITHUB_CLIENT_ID,
+          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          code: req.body.authorizationCode
+        }
+        await axios.post('https://github.com/login/oauth/access_token',
+          params,
+          {headers: {accept: 'application/json'}})
+          .then(result=>{ 
+          res.json(
+            { 
+              data: {accessToken: result.data.access_token}, 
+              message: "issued access_token successfully"
+            })})
+          .catch(e=>console.log(e))
+      }
+    }
+  }
 };
