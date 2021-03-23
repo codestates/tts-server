@@ -2,30 +2,64 @@ const { user, tag, users_tag, record, sequelize } = require("../models");
 
 module.exports = {
   // 유저 정보 조회
-  userInfo: async (req, res) => {
-    if (!req.session.userId) {
-      res.status(401).json({ message: "unathorized" });
-    } else {
-      const userInfo = await user.findOne({
-        where: { id: req.session.userId },
-      });
-      // 태그 전달 테스트 필요
-      const tagsInfo = await tag.findAll({
-        include: [
-          {
-            model: users_tag,
-            where: { userId: req.session.userId },
-          },
-        ],
-      });
-      const tags = [];
-      for (let i = 0; i < tagsInfo.length; i += 1) {
-        tags.push(tagsInfo[i].dataValues.tagName);
-      }
+  userInfo: {
+    get: async (req, res) => {
+      if (!req.session.userId) {
+        res.status(401).json({ message: "unathorized" });
+      } else {
+        const userInfo = await user.findOne({
+          where: { id: req.session.userId },
+        });
+        // 태그 전달 테스트 필요
+        const tagsInfo = await tag.findAll({
+          include: [
+            {
+              model: users_tag,
+              where: { userId: req.session.userId },
+            },
+          ],
+        });
+        const tags = [];
+        for (let i = 0; i < tagsInfo.length; i += 1) {
+          tags.push(tagsInfo[i].dataValues.tagName);
+        }
 
-      const { email, userName } = userInfo.dataValues;
-      res.status(200).json({ data: { email, userName, tags }, message: "ok" });
-    }
+        const { email, userName } = userInfo.dataValues;
+        res
+          .status(200)
+          .json({ data: { email, userName, tags }, message: "ok" });
+      }
+    },
+
+    post: async (req, res) => {
+      console.log("New password : ", req.body.newPassword);
+      if (!req.session.userId || req.body.newPassword === undefined) {
+        res.status(404).json({
+          message:
+            "Your session had expired, please log in again or send New Password",
+        });
+      } else {
+        const userInfo = await user.findOne({
+          where: { id: req.session.userId },
+        });
+        console.log("password : ", userInfo.dataValues);
+
+        const { password } = userInfo.dataValues;
+
+        if (password === req.body.newPassword) {
+          res.status(403).json({ message: "Same password as before" });
+        } else {
+          await user.update(
+            { password: req.body.newPassword },
+            { where: { id: req.session.userId } }
+          );
+
+          res
+            .status(200)
+            .json({ message: "Your password has been changed successfully" });
+        }
+      }
+    },
   },
   // 레코드
   record: {
