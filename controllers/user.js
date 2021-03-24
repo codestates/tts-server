@@ -170,8 +170,7 @@ module.exports = {
       res.status(401).json({ message: "unauthorized" });
     } else {
       req.session.destroy((err) => {
-        res.clearCookie("connect.sid");
-        res.status(200).json({ message: "logout successfully" });
+        res.clearCookie("connect.sid").status(200).json({ message: "logout successfully" });
       });
     }
   },

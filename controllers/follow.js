@@ -5,8 +5,8 @@ const Op = Sequelize.Op;
 module.exports = {
   // 유저 검색
   search: async (req, res) => {
-    const { email, userName } = req.body;
-    const standard = email || userName;
+    const { keyword } = req.body;
+    const standard = keyword
     const userInfo = await user.findAll({
       include: [
         {
@@ -21,22 +21,24 @@ module.exports = {
         },
       ],
       where: { [Op.or]: [{ email:{ [Op.like]: '%' + standard + '%'} }, { userName: {[Op.like]: '%' + standard + '%'} }] },
-      attributes: ["email", "userName"],
+      attributes: ["email", "userName", "id"],
       order: [[{ model: users_tag }, "tagId", "DESC"]],
     });
-
-    if (userInfo.length === 0) {
-      res.status(404).json({ message: "not found" });
-    } else {
-      let users = [];
-      for (let i = 0; i < userInfo.length; i += 1) {
-        const { email, userName, users_tags } = userInfo[i].dataValues;
-        const tag = users_tags[0].tag.tagName;
-        const sumData = { email, userName, tag };
-        users.push(sumData);
+    const followingList = await follow.findAll({where: {userId: req.session.userId}, attributes: ['followingId']})
+      .then(data => {
+        return data.map(user => user.dataValues.followingId);  
+      })
+    let users = [];
+    for (let i = 0; i < userInfo.length; i += 1) {
+      const { email, userName, users_tags, id } = userInfo[i].dataValues;
+      if (id === req.session.userId || followingList.includes(id)) {
+        continue;
       }
-      res.status(200).json({ data: { users }, message: "ok" });
+      const tag = users_tags[0].tag.tagName;
+      const sumData = { email, userName, tag };
+      users.push(sumData);
     }
+    res.status(200).json({ data: { users }, message: "ok" });
   },
   // 친구 추가
   add: async (req, res) => {
@@ -65,6 +67,17 @@ module.exports = {
           message: "ok",
         });
       }
+    }
+  },
+  //친구삭제
+  remove: async (req, res) => {
+    if (!req.session.userId) {
+      res.status(401).json({ message: "unauthorized" });
+    } else {
+      const { email } = req.body
+      const { id } = await user.findOne({where: { email }})
+      await follow.destroy({where: {followingId: id, userId: req.session.userId}})
+      res.status(200).json({message: 'remove successfully'});
     }
   },
   // 친구 조회
