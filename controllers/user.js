@@ -25,9 +25,7 @@ module.exports = {
         }
 
         const { email, userName } = userInfo.dataValues;
-        res
-          .status(200)
-          .json({ data: { email, userName, tags }, message: "ok" });
+        res.status(200).json({ data: { email, userName, tags }, message: "ok" });
       }
     },
 
@@ -35,8 +33,7 @@ module.exports = {
       console.log("New password : ", req.body.newPassword);
       if (!req.session.userId || req.body.newPassword === undefined) {
         res.status(404).json({
-          message:
-            "Your session had expired, please log in again or send New Password",
+          message: "Your session had expired, please log in again or send New Password",
         });
       } else {
         const userInfo = await user.findOne({
@@ -49,14 +46,9 @@ module.exports = {
         if (password === req.body.newPassword) {
           res.status(403).json({ message: "Same password as before" });
         } else {
-          await user.update(
-            { password: req.body.newPassword },
-            { where: { id: req.session.userId } }
-          );
+          await user.update({ password: req.body.newPassword }, { where: { id: req.session.userId } });
 
-          res
-            .status(200)
-            .json({ message: "Your password has been changed successfully" });
+          res.status(200).json({ message: "Your password has been changed successfully" });
         }
       }
     },
