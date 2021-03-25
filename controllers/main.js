@@ -32,7 +32,9 @@ module.exports = {
           .json({ message: "not exist, check your email or password" });
       } else {
         req.session.userId = userInfo.id;
-        res.status(200).json({ message: "login successfully" });
+        req.session.save(err => {
+          res.status(200).json({ message: "login successfully" });
+        })
       }
     }
   },

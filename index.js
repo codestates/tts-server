@@ -21,19 +21,19 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      domain: "ttsofme",
-      path: "/",
+      ///domain: "server.ttsofme.com",
+      //path: "/main/login",
       maxAge: 24 * 3600 * 1000,
-      sameSite: "none",
+      //sameSite: "none",
       httpOnly: true,
-      secure: true,
+      //secure: true,
     },
   })
 );
 
 app.use(
   cors({
-    origin: "https://ttsofme.com",
+    origin: "https://www.ttsofme.com",
     methods: ["GET", "POST", "OPTION"],
     credentials: true,
   })
