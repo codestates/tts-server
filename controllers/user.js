@@ -4,7 +4,7 @@ module.exports = {
   userInfo: {
     get: async (req, res) => {
       if (!req.session.userId) {
-        res.status(401).json({ message: "unathorized" });
+        res.status(401).json({ message: "unauthorized" });
       } else {
         const userInfo = await user.findOne({
           where: { id: req.session.userId },
