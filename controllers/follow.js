@@ -3,7 +3,6 @@ const { user, users_tag, tag, follow } = require("../models");
 const Op = Sequelize.Op;
 
 module.exports = {
-  // 유저 검색
   search: async (req, res) => {
     const { keyword } = req.body;
     const standard = keyword;
@@ -39,7 +38,7 @@ module.exports = {
     }
     res.status(200).json({ data: { users }, message: "ok" });
   },
-  // 친구 추가
+
   add: async (req, res) => {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });
@@ -68,7 +67,7 @@ module.exports = {
       }
     }
   },
-  //친구삭제
+
   remove: async (req, res) => {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });
@@ -79,7 +78,7 @@ module.exports = {
       res.status(200).json({ message: "remove successfully" });
     }
   },
-  // 친구 조회
+  
   get: async (req, res) => {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });

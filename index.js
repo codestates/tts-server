@@ -9,8 +9,16 @@ const mainRouter = require("./Routers/main");
 const followRouter = require("./Routers/follow");
 
 const app = express();
+<<<<<<< HEAD
 const port = process.env.PORT || 5000;
 app.use(morgan(":method :url :status :res[header] :req[header] :response-time ms"));
+=======
+const port = 5000;
+
+app.use(
+  morgan(":method :url :status :res[header] :req[header] :response-time ms")
+);
+>>>>>>> 24b73bfc81a0e485dfd403888ca98d9c2fd9deb5
 
 app.use(
   session({
@@ -18,7 +26,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      domain: "localhost",
+      domain: "ttsofme",
       path: "/",
       maxAge: 24 * 3600 * 1000,
       sameSite: "none",
@@ -30,7 +38,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "https://localhost:3000",
+    origin: "https://ttsofme.com",
     methods: ["GET", "POST", "OPTION"],
     credentials: true,
   })

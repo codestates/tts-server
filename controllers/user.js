@@ -1,7 +1,6 @@
 const { user, tag, users_tag, record, sequelize } = require("../models");
 
 module.exports = {
-  // 유저 정보 조회
   userInfo: {
     get: async (req, res) => {
       if (!req.session.userId) {
@@ -10,7 +9,6 @@ module.exports = {
         const userInfo = await user.findOne({
           where: { id: req.session.userId },
         });
-        // 태그 전달 테스트 필요
         const tagsInfo = await tag.findAll({
           include: [
             {
@@ -30,7 +28,6 @@ module.exports = {
     },
 
     post: async (req, res) => {
-      console.log("New password : ", req.body.newPassword);
       if (!req.session.userId || req.body.newPassword === undefined) {
         res.status(404).json({
           message: "Your session had expired, please log in again or send New Password",
@@ -39,7 +36,6 @@ module.exports = {
         const userInfo = await user.findOne({
           where: { id: req.session.userId },
         });
-        console.log("password : ", userInfo.dataValues);
 
         const { password } = userInfo.dataValues;
 
@@ -53,9 +49,8 @@ module.exports = {
       }
     },
   },
-  // 레코드
+
   record: {
-    // 기록하기
     post: async (req, res) => {
       if (!req.session.userId) {
         res.status(401).json({ message: "unauthorized" });
@@ -64,7 +59,6 @@ module.exports = {
         const data = await record.findOne({
           where: { week, day, recordName, userId: req.session.userId },
         });
-        // 해당 날짜에 존재하는 데이터가 없을 땐 새로운 데이터 생성 아니면 시간 업데이트
         if (!data) {
           await record.create({
             week,
@@ -121,7 +115,6 @@ module.exports = {
         res.status(201).json({ message: "updated" });
       }
     },
-    // 레코드 조회
     get: async (req, res) => {
       console.log(req.session);
       if (!req.session.userId) {
@@ -156,7 +149,7 @@ module.exports = {
       }
     },
   },
-  // 로그아웃
+  
   logOut: async (req, res) => {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });
