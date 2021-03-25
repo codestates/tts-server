@@ -9,16 +9,9 @@ const mainRouter = require("./Routers/main");
 const followRouter = require("./Routers/follow");
 
 const app = express();
-<<<<<<< HEAD
-const port = process.env.PORT || 5000;
-app.use(morgan(":method :url :status :res[header] :req[header] :response-time ms"));
-=======
 const port = 5000;
 
-app.use(
-  morgan(":method :url :status :res[header] :req[header] :response-time ms")
-);
->>>>>>> 24b73bfc81a0e485dfd403888ca98d9c2fd9deb5
+app.use(morgan(":method :url :status :res[header] :req[header] :response-time ms"));
 
 app.use(
   session({
