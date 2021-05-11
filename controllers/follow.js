@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 module.exports = {
   search: async (req, res) => {
     const { keyword } = req.body;
-    const standard = keyword
+    const standard = keyword;
     const userInfo = await user.findAll({
       include: [
         {
@@ -19,14 +19,13 @@ module.exports = {
           ],
         },
       ],
-      where: { [Op.or]: [{ email:{ [Op.like]: '%' + standard + '%'} }, { userName: {[Op.like]: '%' + standard + '%'} }] },
+      where: { [Op.or]: [{ email: { [Op.like]: "%" + standard + "%" } }, { userName: { [Op.like]: "%" + standard + "%" } }] },
       attributes: ["email", "userName", "id"],
       order: [[{ model: users_tag }, "tagId", "DESC"]],
     });
-    const followingList = await follow.findAll({where: {userId: req.session.userId}, attributes: ['followingId']})
-      .then(data => {
-        return data.map(user => user.dataValues.followingId);  
-      })
+    const followingList = await follow.findAll({ where: { userId: req.session.userId }, attributes: ["followingId"] }).then((data) => {
+      return data.map((user) => user.dataValues.followingId);
+    });
     let users = [];
     for (let i = 0; i < userInfo.length; i += 1) {
       const { email, userName, users_tags, id } = userInfo[i].dataValues;
@@ -73,10 +72,10 @@ module.exports = {
     if (!req.session.userId) {
       res.status(401).json({ message: "unauthorized" });
     } else {
-      const { email } = req.body
-      const { id } = await user.findOne({where: { email }})
-      await follow.destroy({where: {followingId: id, userId: req.session.userId}})
-      res.status(200).json({message: 'remove successfully'});
+      const { email } = req.body;
+      const { id } = await user.findOne({ where: { email } });
+      await follow.destroy({ where: { followingId: id, userId: req.session.userId } });
+      res.status(200).json({ message: "remove successfully" });
     }
   },
   

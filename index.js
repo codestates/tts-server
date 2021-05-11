@@ -11,9 +11,7 @@ const followRouter = require("./Routers/follow");
 const app = express();
 const port = 5000;
 
-app.use(
-  morgan(":method :url :status :res[header] :req[header] :response-time ms")
-);
+app.use(morgan(":method :url :status :res[header] :req[header] :response-time ms"));
 
 app.use(
   session({
@@ -62,7 +60,9 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
     )
     .listen(port);
 } else {
-  server = app.listen(port, () => {});
+  server = app.listen(port, () => {
+    console.log("Https Server on ");
+  });
 }
 
 module.exports = server;

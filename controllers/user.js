@@ -23,17 +23,14 @@ module.exports = {
         }
 
         const { email, userName } = userInfo.dataValues;
-        res
-          .status(200)
-          .json({ data: { email, userName, tags }, message: "ok" });
+        res.status(200).json({ data: { email, userName, tags }, message: "ok" });
       }
     },
 
     post: async (req, res) => {
       if (!req.session.userId || req.body.newPassword === undefined) {
         res.status(404).json({
-          message:
-            "Your session had expired, please log in again or send New Password",
+          message: "Your session had expired, please log in again or send New Password",
         });
       } else {
         const userInfo = await user.findOne({
@@ -45,14 +42,9 @@ module.exports = {
         if (password === req.body.newPassword) {
           res.status(403).json({ message: "Same password as before" });
         } else {
-          await user.update(
-            { password: req.body.newPassword },
-            { where: { id: req.session.userId } }
-          );
+          await user.update({ password: req.body.newPassword }, { where: { id: req.session.userId } });
 
-          res
-            .status(200)
-            .json({ message: "Your password has been changed successfully" });
+          res.status(200).json({ message: "Your password has been changed successfully" });
         }
       }
     },
@@ -77,10 +69,7 @@ module.exports = {
           });
         } else {
           const sumTime = data.dataValues.time + time;
-          await record.update(
-            { time: sumTime },
-            { where: { week, day, recordName, userId: req.session.userId } }
-          );
+          await record.update({ time: sumTime }, { where: { week, day, recordName, userId: req.session.userId } });
         }
         const total = await record
           .findAll({
@@ -127,6 +116,7 @@ module.exports = {
       }
     },
     get: async (req, res) => {
+      console.log(req.session);
       if (!req.session.userId) {
         res.status(401).json({ message: "unauthorized" });
       } else {
